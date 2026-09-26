@@ -10,7 +10,7 @@
 <title>Weibull Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
   --paper: #eceff0;
@@ -28,13 +28,15 @@
   --amber-bg: #f6edd8;
   --focus: #1d6d84;
   --shadow: none;
+  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   color-scheme: light;
 }
 /* Light is the base. The dark blocks below all stand down when the reader has
    explicitly chosen light, whether that choice came from the viewer
    (data-theme) or from the control in the header (data-appearance). */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-appearance="light"]) {
+  :root:not([data-theme="light"]):not([data-appearance]) {
     --paper: #0d1518;
     --panel: #141f23;
     --ink: #dfe8e7;
@@ -52,7 +54,7 @@
     color-scheme: dark;
   }
 }
-:root[data-theme="dark"]:not([data-appearance="light"]),
+:root[data-theme="dark"]:not([data-appearance]),
 :root[data-appearance="dark"] {
   --paper: #0d1518;
   --panel: #141f23;
@@ -73,20 +75,98 @@
 
 :root[data-appearance="light"] { color-scheme: light; }
 
+/* Mission-control: near-black, one cool accent, flat.
+   Red is deliberately not the accent here. On a telemetry readout red means
+   a fault, and B10 is an answer rather than a warning, so the accent is ice
+   blue and red stays free for the app's actual warning states. */
+:root[data-appearance="spacex"] {
+  --paper: #07080a;
+  --panel: #101317;
+  --ink: #f2f4f5;
+  --ink-soft: #868c92;
+  --ink-faint: #565b60;
+  --rule: #1b1e23;
+  --grid: #14171b;
+  --grid-major: #272b31;
+  --madder: #5ec8ea;
+  --madder-soft: rgba(94, 200, 234, 0.14);
+  --slate: #7d8b96;
+  --amber: #d0a24a;
+  --amber-bg: #1d1a12;
+  --focus: #5ec8ea;
+  --font-sans: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+/* Showroom: white, generous space, a single signal red.
+   Here red IS the accent, which is the house style being borrowed; the
+   warning states stay legible because they carry their own background and
+   border rather than relying on hue alone. */
+:root[data-appearance="tesla"] {
+  --paper: #ffffff;
+  --panel: #f4f4f4;
+  --ink: #171a20;
+  --ink-soft: #5c5e62;
+  --ink-faint: #8e8e93;
+  --rule: #d0d1d2;
+  --grid: #e8e8e9;
+  --grid-major: #c8c9ca;
+  --madder: #e82127;
+  --madder-soft: rgba(232, 33, 39, 0.10);
+  --slate: #5c5e62;
+  --amber: #8a5d00;
+  --amber-bg: #f7f0de;
+  --focus: #171a20;
+  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+
+/* Tesla in the dark: the car's screen rather than the showroom site. Same red,
+   same face, near-black paper. This block follows the system preference, so
+   the theme works for someone who lives in dark mode instead of locking them
+   out of it. Placed after the light block: same specificity, so source order
+   decides, which is the whole reason the ordering bug happened before. */
+@media (prefers-color-scheme: dark) {
+  :root[data-appearance="tesla"] {
+    --paper: #171a20;
+    --panel: #21252b;
+    --ink: #f4f4f4;
+    --ink-soft: #a2a5aa;
+    --ink-faint: #75787d;
+    --rule: #33373d;
+    --grid: #24282e;
+    --grid-major: #3c4046;
+    --madder: #ff4b50;
+    --madder-soft: rgba(255, 75, 80, 0.16);
+    --slate: #8d9299;
+    --amber: #d8a441;
+    --amber-bg: #2a2313;
+    --focus: #ff4b50;
+    color-scheme: dark;
+  }
+}
+
+/* SpaceX has no light variant on purpose: a mission-control readout is dark
+   by nature, and a white version would just be the default theme wearing a
+   different font. */
+
+/* Both themes keep the monospace numerals. Tabular figures are not a style
+   choice here: the tables only line up because every digit is one width. */
+
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   font-size: 15px;
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
 }
 
 .num, table.data td, .stat-value, input, select, textarea {
-  font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
@@ -392,7 +472,7 @@ body:not(.has-interval) .o-blank { display: none; }
 /* One unit is the overwhelmingly common case, so it shows as a quiet chip and
    only becomes a field when someone means to change it. */
 .o-qtychip {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 12.5px;
   color: var(--ink-soft);
   background: none;
@@ -511,10 +591,10 @@ button.chip[aria-pressed="true"] {
 @media (max-width: 560px) { #appearance { margin-left: 0; } }
 
 .hint { font-size: 12px; color: var(--ink-faint); line-height: 1.5; margin: 6px 0 0; }
-.hint code { font-family: "IBM Plex Mono", monospace; color: var(--ink-soft); }
+.hint code { font-family: var(--font-mono); color: var(--ink-soft); }
 
 .tally { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--ink-soft); margin-top: 10px; }
-.tally b { font-weight: 500; color: var(--ink); font-family: "IBM Plex Mono", monospace; }
+.tally b { font-weight: 500; color: var(--ink); font-family: var(--font-mono); }
 
 .note {
   border-left: 2px solid var(--amber);
@@ -541,15 +621,47 @@ td {
   text-align: right;
   padding: 5px 0;
   border-bottom: 1px solid var(--grid);
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-td.name { font-family: "IBM Plex Sans", sans-serif; }
+td.name { font-family: var(--font-sans); }
 th + th, td + td { padding-left: 14px; }
 tr.best td { color: var(--ink); }
 tr.dim td { color: var(--ink-soft); }
+.row-pick {
+  background: none;
+  border: none;
+  padding: 2px 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  white-space: normal;
+  width: 100%;
+  cursor: pointer;
+}
+.row-pick:hover, .row-pick:focus-visible { text-decoration: underline; }
 td .ci { color: var(--ink-faint); font-size: 12px; }
+
+.plot-stage { position: relative; }
+.plot-stage svg { display: block; width: 100%; height: auto; }
+/* Only the read-off line takes pointer events, so only its band does. The
+   rest of the plot stays scrollable under a finger. */
+.bline-grab {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 30px;
+  transform: translateY(-50%);
+  touch-action: none;
+  cursor: ns-resize;
+  background: none;
+}
+.bline-grab:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.bline-readout { font-size: 13px; margin: 6px 0 0; color: var(--ink); }
+.bline-readout b { font-family: var(--font-mono); }
+.bline-readout:empty { display: none; }
 
 .plotwrap {
   border: 1px solid var(--rule);
@@ -571,7 +683,7 @@ svg { display: block; width: 100%; height: auto; }
 .k-model { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
 .k-model .k-why { font-weight: 400; color: var(--ink-soft); font-size: 13px; }
 .k-num {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-size: 40px;
   line-height: 1.05;
@@ -581,9 +693,9 @@ svg { display: block; width: 100%; height: auto; }
 .k-unit { font-size: 16px; color: var(--ink-soft); margin-left: 6px; }
 .k-label { font-size: 12.5px; color: var(--ink-soft); margin-top: 5px; }
 .k-value-line { margin-bottom: 3px; }
-.k-ci { font-size: 12.5px; color: var(--ink-faint); font-family: "IBM Plex Mono", monospace; }
+.k-ci { font-size: 12.5px; color: var(--ink-faint); font-family: var(--font-mono); }
 .k-row { display: flex; flex-wrap: wrap; gap: 4px 26px; margin-top: 12px; font-size: 13px; color: var(--ink-soft); }
-.k-row b { display: block; font-family: "IBM Plex Mono", monospace; font-size: 15px; color: var(--ink); font-weight: 500; }
+.k-row b { display: block; font-family: var(--font-mono); font-size: 15px; color: var(--ink); font-weight: 500; }
 
 details.block { border-top: 1px solid var(--rule); padding: 10px 0 2px; }
 details.block > summary {
@@ -613,7 +725,7 @@ details.block > summary:hover { color: var(--ink); }
   border-bottom: 1px solid var(--rule);
 }
 .headline .model { font-size: 19px; font-weight: 600; }
-.headline .params { font-family: "IBM Plex Mono", monospace; font-size: 15px; color: var(--madder); }
+.headline .params { font-family: var(--font-mono); font-size: 15px; color: var(--madder); }
 .headline .meta { font-size: 12.5px; color: var(--ink-soft); margin-left: auto; }
 
 .stats { display: flex; flex-wrap: wrap; gap: 3px 28px; font-size: 13px; color: var(--ink-soft); margin: 0 0 4px; }
@@ -651,7 +763,7 @@ details.block > summary:hover { color: var(--ink); }
   border-radius: 2px;
 }
 #live-strip .ls-num {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-size: 19px;
   color: var(--madder);
@@ -685,7 +797,28 @@ details.block > summary:hover { color: var(--ink); }
 }
 footer { border-top: 1px solid var(--rule); padding: 16px 22px 40px; color: var(--ink-faint); font-size: 12px; }
 footer p { margin: 0 0 6px; max-width: 78ch; }
-@media print { #left { display: none; } main { grid-template-columns: 1fr; } }
+/* Printing is for attaching a fit to a report, so: light tokens whatever the
+   screen theme, one column, and none of the controls, which are meaningless on
+   paper. Disclosures are forced open or their contents would silently vanish
+   from the printout. */
+@media print {
+  :root {
+    --paper: #ffffff; --panel: #ffffff; --ink: #111111; --ink-soft: #333333;
+    --ink-faint: #555555; --rule: #999999; --grid: #e2e2e2; --grid-major: #bbbbbb;
+    --madder: #a4243b; --madder-soft: rgba(164, 36, 59, 0.10); --slate: #4e707c;
+    --amber: #8a5d00; --amber-bg: #f6edd8; --focus: #1d6d84;
+    color-scheme: light;
+  }
+  body { background: #ffffff; padding-bottom: 0; }
+  header .tagline, #left, footer, #undo-bar, #bottombar, #live-strip,
+  .bline-grab, #settings, #sheet-backdrop { display: none !important; }
+  main { grid-template-columns: 1fr; }
+  #right { padding: 0; }
+  details.block > summary { list-style: none; }
+  details.block > summary::after { content: ""; }
+  .scrollx { overflow-x: visible; }
+  .keyblock, section, details.block { break-inside: avoid; }
+}
 </style>
 </head>
 <body>
@@ -708,11 +841,9 @@ footer p { margin: 0 0 6px; max-width: 78ch; }
       </div>
       <div id="rows"></div>
       <div id="firstrun" hidden>
-        <p class="hint" style="margin:0 0 8px">Type a life into a row and pick what happened to
-        that unit. Enter moves to the next row.</p>
-        <p class="hint" style="margin:0 0 8px">Not every unit fails. The dropdown also covers
-        <b>still running</b>, <b>already failed</b> when you first looked, and <b>failed between
-        checks</b> &mdash; those all carry information, and leaving them out biases the answer.</p>
+        <p class="hint" style="margin:0 0 8px">Type a life into a row and pick what happened to it.
+        Most units are not simple failures &mdash; <b>still running</b>, <b>already failed</b>, and
+        <b>failed between checks</b> all carry information, and skipping them biases the answer.</p>
         <p class="hint" style="margin:0 0 10px">New to censored life data? Load a real test and
         see how it works.</p>
         <button id="load-worked" class="chip" type="button">Load a worked example</button>
@@ -773,18 +904,11 @@ footer p { margin: 0 0 6px; max-width: 78ch; }
       <p class="hint" id="sample-note">Loading an example replaces whatever is in the table.</p>
     </section>
 
-    <section>
-      <h2>Model</h2>
-      <div class="chips" id="models"></div>
-      <p class="hint" id="model-note"></p>
-    </section>
-
-    <section>
-      <h2>Confidence bounds</h2>
-      <div class="chips" id="bounds"></div>
-      <div class="chips" id="levels" style="margin-top:8px"></div>
-      <p class="hint" id="bounds-note"></p>
-    </section>
+    <details class="block">
+      <summary>Advanced</summary>
+      <h2 style="margin-top:10px">Confidence level</h2>
+      <div class="chips" id="levels"></div>
+    </details>
 
     <section>
       <h2>Theme</h2>
@@ -1841,11 +1965,26 @@ const state = {
   appearance: 'light',
   rows: [],
   modelId: 'auto',
-  bounds: 'fisher',
   confidence: 0.95,
   unit: '',
   relTime: null,
+  /* The draggable read-off line, held as a CDF probability. B10 to start,
+     since that is the life the rest of the app leads with. */
+  blP: 0.10,
 };
+
+/* Below this many failure-carrying observations, Fisher and likelihood-ratio
+   bounds disagree enough to matter (96% apart at 4 failures, 11% at 20); above
+   it they converge (5% at 40, under 1% at 200). 30 is also the conventional
+   threshold for when a normal approximation is considered reasonable, which is
+   exactly the assumption Fisher bounds make. There is no longer a toggle: the
+   app picks whichever the sample size actually supports, and says which it
+   used on the result rather than asking beforehand. */
+const BOUNDS_AUTO_THRESHOLD = 30;
+
+function autoBoundsMethod(rows) {
+  return WL.summarise(rows).failureLike < BOUNDS_AUTO_THRESHOLD ? 'lr' : 'fisher';
+}
 
 /* ------------------------------------------------------------------ parsing */
 
@@ -2063,15 +2202,42 @@ function buildPlot(fit, positions) {
   const stride = Math.ceil(majors.length / maxLabels);
   majors.forEach((v, i) => {
     if (i % stride !== 0) return;
-    out.push(`<text x="${px(v).toFixed(1)}" y="${M.t + ih + (narrow ? 14 : 16)}" text-anchor="middle" font-size="${fs}" font-family="IBM Plex Mono, monospace" fill="var(--ink-soft)">${sig(v, 3)}</text>`);
+    out.push(`<text x="${px(v).toFixed(1)}" y="${M.t + ih + (narrow ? 14 : 16)}" text-anchor="middle" font-size="${fs}" font-family="var(--font-mono)" fill="var(--ink-soft)">${sig(v, 3)}</text>`);
   });
   for (const p of yTicks) {
-    out.push(`<text x="${M.l - 6}" y="${(py(p) + 3.5).toFixed(1)}" text-anchor="end" font-size="${fs}" font-family="IBM Plex Mono, monospace" fill="var(--ink-soft)">${(p * 100 < 1 ? (p * 100).toFixed(1) : String(Math.round(p * 1000) / 10))}</text>`);
+    out.push(`<text x="${M.l - 6}" y="${(py(p) + 3.5).toFixed(1)}" text-anchor="end" font-size="${fs}" font-family="var(--font-mono)" fill="var(--ink-soft)">${(p * 100 < 1 ? (p * 100).toFixed(1) : String(Math.round(p * 1000) / 10))}</text>`);
   }
   out.push(`<text x="${M.l + iw / 2}" y="${H - 4}" text-anchor="middle" font-size="${narrow ? 11 : 12}" fill="var(--ink-soft)">Life${state.unit ? ` (${esc(state.unit)})` : ''}${d.logX && !narrow ? ', log scale' : ''}</text>`);
   out.push(`<text x="${narrow ? 11 : 14}" y="${M.t + ih / 2}" text-anchor="middle" font-size="${narrow ? 11 : 12}" fill="var(--ink-soft)" transform="rotate(-90 ${narrow ? 11 : 14} ${M.t + ih / 2})">Percent failed</text>`);
+  /* The read-off line. Drag it and the readout below follows the fitted curve
+     to any B-life, instead of only the seven the table happens to list.
+     Two strokes: a wide translucent one to give a 16px grab target on a
+     touchscreen, and the thin dashed line that is actually seen. */
+  const blY = py(Math.min(0.99, Math.max(0.01, state.blP)));
+  out.push(`<g id="bline" style="cursor:ns-resize">`
+    + `<line x1="${M.l}" y1="${blY.toFixed(1)}" x2="${(M.l + iw).toFixed(1)}" y2="${blY.toFixed(1)}" stroke="var(--amber)" stroke-width="16" opacity="0.16"/>`
+    + `<line x1="${M.l}" y1="${blY.toFixed(1)}" x2="${(M.l + iw).toFixed(1)}" y2="${blY.toFixed(1)}" stroke="var(--amber)" stroke-width="1.6" stroke-dasharray="6 3"/>`
+    + `<text x="${(M.l + iw - 4).toFixed(1)}" y="${(blY - 6).toFixed(1)}" text-anchor="end" font-size="11" font-weight="600" fill="var(--amber)">B${Math.round(state.blP * 100)}</text></g>`);
+
   out.push('</svg>');
-  return out.join('');
+
+  /* Inverse of py(). The y transform differs per model and is not always
+     cheaply invertible, so bisect it rather than keeping a second formula in
+     sync with the forward one. 40 steps is well past pixel resolution. */
+  const yToP = (yPx) => {
+    let lo = 1e-6, hi = 1 - 1e-6;
+    for (let i = 0; i < 40; i++) {
+      const mid = (lo + hi) / 2;
+      if (py(mid) > yPx) lo = mid; else hi = mid;
+    }
+    return (lo + hi) / 2;
+  };
+  const xToT = (xPx) => {
+    const v = x0 + ((xPx - M.l) / iw) * (x1 - x0);
+    return d.logX ? Math.exp(v) : v;
+  };
+
+  return { svg: out.join(''), geom: { M, W, H, iw, ih, d, px, py, yToP, xToT } };
 }
 
 /* ------------------------------------------------------------------ results */
@@ -2092,21 +2258,24 @@ const PERCENTILES = [0.1, 0.5, 0.9, 0.95, 0.99];
 const REFIT_DELAY_MS = 300;
 let analysis = null;
 let refitTimer = null;
+let lastPlot = null;
 
-function analysisKey(rows) {
-  return JSON.stringify([rows, state.confidence, state.bounds]);
+function analysisKey(rows, boundsMethod) {
+  return JSON.stringify([rows, state.confidence, boundsMethod]);
 }
 
 function computeAnalysis() {
   const rows = usableRows();
-  const key = analysisKey(rows);
+  const boundsMethod = autoBoundsMethod(rows);
+  const key = analysisKey(rows, boundsMethod);
   if (analysis && analysis.key === key) return analysis;
   const candidates = rows.length
-    ? WL.fitAll(rows, { confidence: state.confidence, bounds: state.bounds })
+    ? WL.fitAll(rows, { confidence: state.confidence, bounds: boundsMethod })
     : [];
   analysis = {
     key,
     rows,
+    boundsMethod,
     candidates,
     ranked: WL.rank(candidates),
     positions: rows.length ? WL.plotPositions(rows) : [],
@@ -2152,6 +2321,7 @@ function needsLine(rows) {
    What is saved is the text in each field, not the parsed number: a half-typed
    or mistyped entry comes back exactly as it was left, still flagged, rather
    than silently turning into something else. Nothing leaves the device. */
+const APPEARANCES = ['light', 'dark', 'auto', 'spacex', 'tesla'];
 const STATE_KEY = 'weibull-lab-state-v1';
 const KINDS_OK = ['failure', 'right', 'left', 'interval'];
 
@@ -2168,8 +2338,8 @@ function saveState() {
       })),
       unit: state.unit,
       modelId: state.modelId,
-      bounds: state.bounds,
       confidence: state.confidence,
+      blP: state.blP,
     };
     window.localStorage.setItem(STATE_KEY, JSON.stringify(payload));
   } catch (e) {
@@ -2218,8 +2388,10 @@ function restoreState() {
   if (typeof saved.unit === 'string') state.unit = saved.unit.slice(0, 40);
   const modelIds = ['auto'].concat(WL.MODELS.map((m) => m.id));
   if (modelIds.includes(saved.modelId)) state.modelId = saved.modelId;
-  if (saved.bounds === 'fisher' || saved.bounds === 'lr') state.bounds = saved.bounds;
+  // A bounds field from before this was automatic may still be sitting in an
+  // older saved copy. It is simply no longer read; nothing to migrate.
   if ([0.9, 0.95, 0.99].includes(saved.confidence)) state.confidence = saved.confidence;
+  if (typeof saved.blP === 'number' && saved.blP > 0 && saved.blP < 1) state.blP = saved.blP;
   return true;
 }
 
@@ -2309,7 +2481,7 @@ function paint() {
   if (!chosen) {
     const bad = candidates.find((c) => c.d.id === state.modelId);
     box.innerHTML = `<div class="note bad"><b>${esc(bad.d.name)} cannot be fitted to this data.</b><br>${esc(bad.error)}</div>`
-      + `<details class="block" open><summary>Compare models</summary>${rankTable(ranked, null)}</details>`;
+      + `<details class="block" open><summary>Compare models</summary>${rankTable(ranked, null, state.modelId)}</details>`;
     return;
   }
 
@@ -2339,7 +2511,7 @@ function paint() {
     </div>
     <div class="k-value-line"><span class="k-num">${sig(b10.value, 4)}</span>${unit}</div>
     <div class="k-label">B10 &mdash; one unit in ten has failed by here</div>
-    <div class="k-ci">${b10.lower === null ? 'bounds unavailable' : `${pct(state.confidence, 0)} confident: ${sig(b10.lower, 4)} to ${sig(b10.upper, 4)}`}</div>
+    <div class="k-ci">${b10.lower === null ? 'bounds unavailable' : `${pct(state.confidence, 0)} confident (${chosen.isLR ? 'LR' : 'Fisher'}): ${sig(b10.lower, 4)} to ${sig(b10.upper, 4)}`}</div>
     <div class="k-row">
       ${est.map((e) => `<span>${esc(e.name)}<b>${sig(e.value, 4)}</b></span>`).join('')}
       <span>median life<b>${sig(m.median, 4)}</b></span>
@@ -2349,7 +2521,12 @@ function paint() {
 
   if (chosen.warning) html += `<div class="note">${esc(chosen.warning)}</div>`;
 
-  html += `<div class="plotwrap">${buildPlot(chosen, positions)}</div>`;
+  const plot = buildPlot(chosen, positions);
+  /* The geometry goes with it so the read-off line can convert a pointer
+     position back into a probability without re-deriving the scales. */
+  lastPlot = { geom: plot.geom, chosen };
+  html += `<div class="plotwrap"><div class="plot-stage" id="plot-stage">${plot.svg}</div>
+    <p class="bline-readout" id="bline-readout"></p></div>`;
   /* Four legend entries plus r-squared wraps to three lines on a 390px
      screen. On a phone, three short ones; the rest is explained in the
      disclosures below. */
@@ -2409,11 +2586,12 @@ function paint() {
       <span>ln L <b class="stat-value">${chosen.logLik.toFixed(4)}</b></span>
       <span>units <b class="stat-value">${chosen.n}</b></span>
       <span>exact failures <b class="stat-value">${chosen.exactFailures}</b></span>
+      <span>bounds <b class="stat-value">${chosen.isLR ? 'Likelihood-ratio' : 'Fisher'}</b></span>
       ${r2 !== null ? `<span>plot r&sup2; <b class="stat-value">${r2.toFixed(4)}</b></span>` : ''}
       ${weight === undefined ? '' : `<span>Akaike weight <b class="stat-value">${pct(weight, 1)}</b></span>`}
     </div></details>`;
 
-  html += `<details class="block"${open}><summary>Compare models</summary>${rankTable(ranked, chosen)}`;
+  html += `<details class="block"${open}><summary>Compare models</summary>${rankTable(ranked, chosen, state.modelId)}`;
   const failed = candidates.filter((c) => c.error);
   if (failed.length) {
     html += `<p class="hint">Not fitted: ${failed.map((c) => `${esc(c.d.name)} (${esc(c.error)})`).join('; ')}</p>`;
@@ -2437,6 +2615,8 @@ function paint() {
       + (chosen.warning ? ` Note: ${chosen.warning}` : '');
     if (live.textContent !== spoken) live.textContent = spoken;
   }
+
+  wirePlotInspect();
 
   const relInput = $('reltime');
   if (relInput) {
@@ -2474,7 +2654,103 @@ function verdict(ranked) {
   return `<p class="verdict">${line}</p>`;
 }
 
-function rankTable(ranked, chosen) {
+/* The draggable B-life read-off line.
+   Only the line is interactive, so the grab target is a band that tracks it
+   rather than an overlay across the whole plot: an overlay would have to set
+   touch-action: none over the entire figure, which kills page scrolling with
+   a finger anywhere on it. The band is 30px of viewport, comfortably above
+   the 24px minimum for a touch target, and moves with the line. */
+function wirePlotInspect() {
+  const stage = $('plot-stage');
+  if (!stage || !lastPlot || !lastPlot.geom) return;
+  const g = lastPlot.geom;
+  const svg = stage.querySelector('svg');
+  const blReadout = $('bline-readout');
+  if (!svg || !blReadout) return;
+
+  /* The SVG is scaled to its container, so a client coordinate has to be
+     converted back into viewBox units before the geometry can use it. */
+  const toPxY = (e) => {
+    const r = svg.getBoundingClientRect();
+    return (e.clientY - r.top) * (g.H / r.height);
+  };
+
+  const band = document.createElement('div');
+  band.className = 'bline-grab';
+  band.setAttribute('role', 'slider');
+  band.setAttribute('aria-label', 'B-life read-off line');
+  band.setAttribute('aria-valuemin', '1');
+  band.setAttribute('aria-valuemax', '99');
+  band.tabIndex = 0;
+  stage.appendChild(band);
+
+  const blY = () => g.py(Math.min(0.99, Math.max(0.01, state.blP)));
+
+  /* Moving the line rewrites the existing SVG nodes rather than repainting the
+     whole results panel: a repaint on every pointermove would be a fit-free
+     but still expensive rebuild, and it would fight the drag. */
+  const paintBline = () => {
+    const bl = svg.querySelector('#bline');
+    if (!bl) return;
+    const y = blY();
+    bl.querySelectorAll('line').forEach((ln) => {
+      ln.setAttribute('y1', y.toFixed(1));
+      ln.setAttribute('y2', y.toFixed(1));
+    });
+    const label = bl.querySelector('text');
+    label.setAttribute('y', (y - 6).toFixed(1));
+    const pctLabel = Math.round(state.blP * 100);
+    label.textContent = `B${pctLabel}`;
+
+    band.style.top = `${(y / g.H) * 100}%`;
+    band.setAttribute('aria-valuenow', String(pctLabel));
+
+    const q = lastPlot.chosen.percentile(state.blP);
+    band.setAttribute('aria-valuetext', `B${pctLabel}, ${sig(q.value, 4)}${state.unit ? ' ' + state.unit : ''}`);
+    blReadout.innerHTML = `<b>B${pctLabel}</b> \u2248 `
+      + `<b>${sig(q.value, 4)}</b>${state.unit ? ' ' + esc(state.unit) : ''} `
+      + `<span class="ci">${q.lower === null ? 'bounds unavailable'
+        : `${pct(state.confidence, 0)} ${lastPlot.chosen.isLR ? 'LR' : 'Fisher'}: `
+          + `${sig(q.lower, 4)} to ${sig(q.upper, 4)}`}</span> `
+      + '<span class="ci">drag the amber line</span>';
+  };
+
+  let dragging = false;
+  band.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    try { band.setPointerCapture(e.pointerId); } catch (err) { /* not fatal */ }
+    e.preventDefault();
+  });
+  band.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    state.blP = Math.min(0.99, Math.max(0.01, g.yToP(toPxY(e))));
+    paintBline();
+  });
+  const stop = () => {
+    if (!dragging) return;
+    dragging = false;
+    saveState();
+  };
+  band.addEventListener('pointerup', stop);
+  band.addEventListener('pointercancel', stop);
+
+  /* Draggable things need a keyboard route too. */
+  band.addEventListener('keydown', (e) => {
+    const step = e.shiftKey ? 0.05 : 0.01;
+    let next = state.blP;
+    if (e.key === 'ArrowUp' || e.key === 'ArrowRight') next += step;
+    else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') next -= step;
+    else return;
+    e.preventDefault();
+    state.blP = Math.min(0.99, Math.max(0.01, next));
+    paintBline();
+    saveState();
+  });
+
+  paintBline();
+}
+
+function rankTable(ranked, chosen, modelId) {
   /* Seven columns will not fit a phone. Drop to the four that carry the
      decision, rather than making the reader scroll sideways to compare. */
   const narrow = plotGeometry().narrow;
@@ -2484,8 +2760,10 @@ function rankTable(ranked, chosen) {
   </tr></thead><tbody>`;
   for (const r of ranked) {
     const isChosen = chosen && r.fit === chosen;
+    const label = isChosen ? `<b>${esc(r.fit.d.name)}</b>` : esc(r.fit.d.name);
     html += `<tr class="${isChosen ? 'best' : 'dim'}">
-      <td class="name">${isChosen ? '<b>' : ''}${esc(r.fit.d.name)}${isChosen ? '</b>' : ''}</td>
+      <td class="name"><button type="button" class="row-pick" data-rank="${r.rank}"
+        data-model="${r.fit.d.id}" aria-pressed="${isChosen}" title="${esc(r.fit.d.blurb)}">${label}</button></td>
       ${narrow ? '' : `<td>${r.fit.logLik.toFixed(3)}</td><td>${r.fit.k}</td>`}
       <td>${r.fit.aic.toFixed(3)}</td><td>${r.deltaAic.toFixed(3)}</td>
       ${narrow ? '' : `<td>${r.fit.bic.toFixed(3)}</td>`}
@@ -2499,7 +2777,8 @@ function rankTable(ranked, chosen) {
     <p class="hint">A gap under about 2 means the data do not distinguish two models. Around 4 to 7
     is moderate support, and above 10 is strong. The weight is each model's relative support among
     these four, not the probability that it is the right model: if the true mechanism is not one of
-    these four, the top-ranked model is only the least bad of them.</p>`;
+    these four, the top-ranked model is only the least bad of them. Tap a row to use that model
+    instead; tap the top row to go back to automatic.</p>`;
   return html;
 }
 
@@ -2892,7 +3171,7 @@ function openSheet(isOpen) {
 function loadAppearance() {
   try {
     const v = window.localStorage.getItem('weibull-lab-appearance');
-    if (v === 'light' || v === 'dark' || v === 'auto') return v;
+    if (APPEARANCES.includes(v)) return v;
   } catch (e) { /* storage blocked; fall through to the default */ }
   return 'light';
 }
@@ -2909,8 +3188,17 @@ function applyAppearance() {
   if (meta) {
     const systemDark = window.matchMedia
       && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const dark = state.appearance === 'dark' || (state.appearance === 'auto' && systemDark);
-    meta.setAttribute('content', dark ? '#0d1518' : '#eceff0');
+    const bar = {
+      light: '#eceff0',
+      dark: '#0d1518',
+      spacex: '#07080a',
+      tesla: '#ffffff',
+      teslaDark: '#171a20',
+    };
+    let key = state.appearance === 'auto' ? (systemDark ? 'dark' : 'light') : state.appearance;
+    // Tesla is the one theme with both variants, so its bar colour forks too.
+    if (key === 'tesla' && systemDark) key = 'teslaDark';
+    meta.setAttribute('content', bar[key] || '#eceff0');
   }
   try { window.localStorage.setItem('weibull-lab-appearance', state.appearance); }
   catch (e) { /* not worth reporting */ }
@@ -2937,6 +3225,8 @@ function refreshControls() {
     { key: 'light', label: 'Light' },
     { key: 'dark', label: 'Dark' },
     { key: 'auto', label: 'Auto', title: 'Follow the system or viewer setting' },
+    { key: 'spacex', label: 'SpaceX', title: 'Mission-control dark: near-black, ice-blue accent' },
+    { key: 'tesla', label: 'Tesla', title: 'Red accent; follows your system light or dark setting' },
   ], (item) => item.key === state.appearance,
   (item) => { state.appearance = item.key; applyAppearance(); refreshControls(); });
 
@@ -2956,44 +3246,30 @@ function refreshControls() {
       render();
     });
 
-  const models = [{
-    id: 'auto',
-    name: 'Auto-select',
-    blurb: 'Compare all four distributions and show the top-ranked fit. Check Compare models '
-      + 'to see whether the data clearly favour it.',
-  }]
-    .concat(WL.MODELS.map((m) => ({ id: m.id, name: m.name, blurb: m.blurb })));
-  chipGroup($('models'), models.map((m) => ({ key: m.id, label: m.name, blurb: m.blurb })),
-    (item) => item.key === state.modelId,
-    (item) => {
-      state.modelId = item.key;
-      refreshControls();
-      paint();
-      if (onPhone()) { openSheet(false); showScreen('results'); }
-    });
-  const active = models.find((m) => m.id === state.modelId);
-  $('model-note').textContent = active ? active.blurb : '';
-
-  chipGroup($('bounds'), [
-    { key: 'fisher', label: 'Fisher' },
-    { key: 'lr', label: 'Likelihood ratio' },
-  ], (item) => item.key === state.bounds,
-  (item) => { state.bounds = item.key; refreshControls(); render(); });
+  // Model selection no longer has its own chip group: it happens by tapping a
+  // row in Compare models (see the delegated click listener near the bottom
+  // of this file), which is the one place the four models were already
+  // listed side by side.
 
   chipGroup($('levels'), [0.90, 0.95, 0.99].map((c) => ({ key: c, label: `${(c * 100).toFixed(0)}%` })),
     (item) => item.key === state.confidence,
     (item) => { state.confidence = item.key; refreshControls(); render(); });
-
-  $('bounds-note').textContent = state.bounds === 'fisher'
-    ? 'Fisher bounds invert the observed information matrix. Fast, and symmetric on the transformed scale, but they assume the estimator is normal and turn optimistic when failures are scarce.'
-    : 'Likelihood-ratio bounds find where the profile log-likelihood falls by z squared over two. '
-      + 'They can better reflect asymmetric likelihoods, but with few failures either method can '
-      + 'still be unreliable. Slower to compute.';
 }
 
 /* -------------------------------------------------------------------- start */
 
 $('add-row').addEventListener('click', () => addRows(1));
+/* Tapping the top-ranked row always means "auto" — the current winner,
+   whichever model that turns out to be — not a snapshot of today's winner. Any
+   other row pins that model by id. This is the only way to change the model
+   now; the separate Settings control it used to need is gone. */
+$('results').addEventListener('click', (e) => {
+  const btn = e.target.closest('.row-pick');
+  if (!btn) return;
+  state.modelId = btn.dataset.rank === '1' ? 'auto' : btn.dataset.model;
+  paint();
+});
+
 $('bb-row').addEventListener('click', () => { showScreen('data'); addRows(1); });
 $('bb-paste').addEventListener('click', () => {
   showScreen('data');
@@ -3121,6 +3397,10 @@ $('paste-append').addEventListener('click', () => applyPaste(false));
 state.appearance = loadAppearance();
 applyAppearance();
 
+const BOUNDS_POLICY = `Confidence bounds switch automatically: likelihood-ratio below `
+  + `${BOUNDS_AUTO_THRESHOLD} failure-carrying observations, Fisher at or above it, since that `
+  + `is roughly where the two methods stop disagreeing. The summary above states which one was `
+  + `used.`;
 const METHOD_VERIFY = 'The statistics here are the same algorithms as the Flutter build, '
   + 'checked against published reference fits for the fan-motor and ball-bearing data sets, '
   + 'closed-form maximum likelihood solutions, and Johnson rank adjustment under censoring.';
@@ -3130,7 +3410,7 @@ const METHOD_CAVEAT = 'Bounds are asymptotic. With few failures they are optimis
   + 'they are computed, and no amount of arithmetic fixes a small sample.';
 $('foot-verify').textContent = METHOD_VERIFY;
 $('foot-caveat').textContent = METHOD_CAVEAT;
-$('method-note').textContent = `${METHOD_VERIFY} ${METHOD_CAVEAT}`;
+$('method-note').textContent = `${METHOD_VERIFY} ${BOUNDS_POLICY} ${METHOD_CAVEAT}`;
 $('foot-storage').textContent = STORAGE_NOTE;
 $('storage-note').textContent = STORAGE_NOTE;
 
